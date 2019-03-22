@@ -43,6 +43,10 @@ If password is absent then it is assumed none is required
 OEDAppID and OEDKey are obtained from Oxford Dictionaries web site mentioned above
 APIXU is obtained from APIXU site mentioned above
 
+BUILDING ShaoB:
+
+Ararat Synapse code library is required to build ShaoB.  This can be found at http://www.ararat.cz/synapse/doku.php/download
+
 STARTING ShaoB:
 
 ShaoB optionally accepts one parameter on start up: Channel.  This will override Channel: parameter in shao.config
