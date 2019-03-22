@@ -56,7 +56,10 @@ ShaoB is console or terminal application.  It is recommended that terminal be 13
 RUNNING ShaoB:
 
 ShaoB clears console and write one line at top of screen with name and version number.  Bottom line is blank.  Both these lines are in inverted video.  If shao.config is correct then ShaoB connects to IRC network mentioned in Network: parameter, attempts to log in using Username: and join channel specified by Channel:
-
 Once fully connected one can type message that will be sent to channel.  If one presses TAB key then QUIT [Y/N] message is displayed.
+
+FPC:
+
+Free Pascal Compiler can be found at https://www.freepascal.org
 
 Have fun
