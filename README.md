@@ -1,2 +1,2 @@
 # ShaoB
-ShaoB is small IRC bot written in object Pascal, FPC
+ShaoB is small IRC bot written in Object Pascal, FPC
