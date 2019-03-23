@@ -3,6 +3,7 @@ Commands:
 – .DEFINE word – Oxford English Definition definition of word
 – .DOF – Displays DoF URLs
 – .HELP – URL to this page
+- .NOTE nick messge - Saves message for nick until next join by nick
 – .OPS – Maintained list of channel ops
 – .PROFILE – Display your email, location, real name, and URL
 – .PROFILE nick  – Display profile for nick, if it exists
