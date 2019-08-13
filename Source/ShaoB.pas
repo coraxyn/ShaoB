@@ -1,8 +1,7 @@
 program ShaoB;
-
+ 
   // IRC ShaoB
   // Will only work on UNIX based OS.  Linux, Darwin, *NIX, etc.
-  // Uses ARARAT SYNAPSE library for sockets and SSL/TLS.
 
 
   {$MODE OBJFPC}
@@ -32,7 +31,7 @@ var
   fOEDKey   : string;
   fPassword : string;
   fPort     : string;
-  fVersion  : string; 
+  fVersion  : string;
   fUserName : string;
   s         : string;
 
@@ -96,7 +95,7 @@ var
 
 
 begin
-  fVersion := '1.9.1';
+  fVersion := '1.9.5';
   fIRC     := tIRC.Create;
   fNote    := tNote.Create;
   fProf    := tProf.Create;
