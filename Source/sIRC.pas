@@ -451,6 +451,7 @@ implementation
                                         end;
                           idTopic     : begin  // .Topic
                                           MsgSend( 'TOPIC ' + fChannel );
+                                          fPending := fUsername + '> Toppic requested';
                                         end;
                           idUp        : begin  // .Up
                                            tTime := Now;
@@ -467,7 +468,7 @@ implementation
                                        //  if uppercase( fChannel ) <> '#PHOTOGEEKS' then begin
                                          t := fWeather.Command( nick, para );
                                          MsgChat( t );
-                                         sRecv  := fUsername + '> ' + t;
+                                         fPending  := fUsername + '> ' + t;
                                        //   end else sRecv  := fUsername + '> hidden weather';
                                        end;
                           idWiki     : begin  // .Wiki
@@ -621,11 +622,11 @@ implementation
     b := FALSE;
     fSocket.ErrorClear;
     if not fSocket.Connected then begin
-      fCon.Send( 'Logging in',taNormal );  // Log in
+      fCon.Send( 'Logging in' );  // Log in
       if fSocket.Connect( fNetwork, strToIntDef( fPort, 80 ) ) then begin
-        fCon.Send( 'Connected to ' + fNetwork + ' port ' + fPort, taNormal );
+        fCon.Send( 'Connected to ' + fNetwork + ' port ' + fPort );
         b := TRUE;
-        fCon.Send( 'Waiting', taNormal );
+        fCon.Send( 'Waiting' );
         sleep( 2000 );
       end else fCon.Send( 'Connect error ' + fSocket.ErrorMsg, taBold );
     end;

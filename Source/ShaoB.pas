@@ -1,7 +1,8 @@
-program ShaoB;
- 
+program ShaoB; 
+
   // IRC ShaoB
   // Will only work on UNIX based OS.  Linux, Darwin, *NIX, etc.
+  // Uses ARARAT SYNAPSE library for sockets and SSL/TLS.
 
 
   {$MODE OBJFPC}
@@ -95,7 +96,7 @@ var
 
 
 begin
-  fVersion := '1.9.5';
+  fVersion := '2.0.0';
   fIRC     := tIRC.Create;
   fNote    := tNote.Create;
   fProf    := tProf.Create;
@@ -120,41 +121,52 @@ begin
   end;
   fCurl := tCurl.Create( fUserName );
   fWeather.APIXU := fAPIXU;
-  fCon := tConsole.Create( fUserName + ' ' + fVersion );
+  fCon := tConsole.Create( fUserName, fVersion );
+  fCon.Line1( 'ShaoB v' + fVersion );
   if err = '' then begin
     fCon.Send( 'Starting ' + fNetwork + ': ' + fUserName + ' v' + fVersion, taBold );
     fIRC.Start;
     fQuake.Start;
     repeat
-      s := fCon.LineGet;
-      if s <> CtrlC then begin
-        if s <> TAB then begin
-          s := Trim( s );
-          if length( s ) > 0 then begin
-            fIRC.MsgChat( s );
-            fCon.Send( fUsername + '> ' + s, taBold );
-            s := '';
-          end;
-        end else if fCon.YesNo( 'Quit' ) then s := 'q';  // Tab
-      end;  // CtrlC
-    until ( s = 'q' ) or ( s = CtrlC );
+      s := '';
+      fCon.LineGet( s );
+      if length( s ) > 0 then begin
+        s := Trim( s );
+        fIRC.MsgChat( s );
+        fCon.Send( fUsername + '> ' + s, taBold );
+      end else begin
+        s := fCon.Menu( 'Display Type Quit' );
+        case s of
+          'D' : fCon.Display;
+          'T' : s := '';
+          'Q' : if not fCon.YesNo( 'Quit' )
+                  then s := '';
+          else  begin
+                  fCon.Send( s );
+                  fIRC.MsgChat( s );
+                end;
+        end;  // case
+      end;  // if length(
+    until s = 'Q';
   end;
   if err <> '' then begin
     fCon.Send( err, taBold );
-    fCon.Send( 'Please review shao.config', taNormal );
-    fCon.Send( 'Requires Network: Channel: OEDAppID: OEDKey: and APIXU: parameters as minimum', taNormal );
-    fCon.Send( 'If Password: is missing then it is assumed none is required', taNormal );
-    fCon.Send( 'If Port: is missing then 6667 is used', taNormal );
-    fCon.Send( 'If Username: is missing then ShaoB is used', taNormal );
+    fCon.Send( 'Please review shao.config' );
+    fCon.Send( 'Requires Network: Channel: OEDAppID: OEDKey: and APIXU: parameters as minimum' );
+    fCon.Send( 'If Password: is missing then it is assumed none is required' );
+    fCon.Send( 'If Port: is missing then 6667 is used' );
+    fCon.Send( 'If Username: is missing then ShaoB is used' );
     fCon.Beep;
     fCon.AnyKey;
   end;
+  fCon.Clear;
   fQuake.Terminate;
   fQuake.WaitFor;
-  fCon.Send( 'Quake thread terminated', taNormal );
+  fCon.Send( 'Quake thread terminated' );
   fIRC.Shutdown;
   fIRC.WaitFor;
-  fCon.Send( 'IRC thread terminated', taNormal );
+  fCon.Send( 'IRC thread terminated' );
+  fCon.Send( 'Laters' );
   fCon.Terminate;
   try
     fNote.Free;
@@ -166,6 +178,5 @@ begin
     fCon.Free;
   except
   end;
-  Writeln( 'Laters' );
   Writeln;
 end.  // ShaoB
