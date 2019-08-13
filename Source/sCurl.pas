@@ -9,7 +9,9 @@ unit sCurl;
 
   {$MODE OBJFPC}
   {$H+}
+  {$IFDEF DARWIN}
   {$LINKLIB 'libcurl.dylib'}
+  {$ENDIF}
 
 interface
 
