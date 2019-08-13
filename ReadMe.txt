@@ -45,7 +45,7 @@ APIXU is obtained from APIXU site mentioned above
 
 BUILDING ShaoB:
 
-Ararat Synapse code library is required to build ShaoB.  This can be found at http://www.ararat.cz/synapse/doku.php/download
+libcurl is required to build ShaoB. On GNU/Linux the package is normally named "libcurl-dev".
 
 STARTING ShaoB:
 
