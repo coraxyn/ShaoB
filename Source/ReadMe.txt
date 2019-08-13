@@ -1,1 +1,1 @@
-Source code for ShaoB except Ararat Synapse TCP code
+Source code for ShaoB
