@@ -60,7 +60,7 @@ interface
          function  Synonyms( s : string ) : string;
          procedure URLEcho( s : string );
          function  Wiki( s : string ) : string;
-         function  WikiFp( s : string ) : string;
+         function  WikiFp(aSearch: string): string;
       protected 
         procedure Execute; override;
       public
@@ -961,13 +961,14 @@ implementation
     result := s;
   end;  // tIRC.Wiki
 
-  function tIRC.WikiFp(s: string): string;
-  // Returns Freepascal Wiki search results of s
+  function tIRC.WikiFp(aSearch: string): string;
+  // Returns Freepascal Wiki search results of search
   var
+    s : string;
     i : integer;
   begin
     try
-      s := fCurl.Get( 'https://wiki.freepascal.org/api.php?action=query&list=search&format=json&srsearch=' + URLEncode( s ) );
+      s := fCurl.Get( 'https://wiki.freepascal.org/api.php?action=query&list=search&format=json&srsearch=' + URLEncode( aSearch ) );
       fJSON := GetJSON( s );
       fJSON := fJSON.FindPath( 'query.search' );
 
@@ -982,6 +983,7 @@ implementation
         while ( i > 0 ) and ( s[ i ] <> '.' ) do dec( i );
         s := copy( s, 1, i );
       end;
+      s := s + ' ~ https://wiki.lazarus.freepascal.org/index.php?search=' + URLEncode( aSearch );
     except
       on E : EJSONParser do s := 'Freepascal Wiki ' + E.Message + E.ClassName;
       on E : Exception   do s := 'Not found';
