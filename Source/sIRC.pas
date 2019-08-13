@@ -974,8 +974,7 @@ implementation
       fJSON := GetJSON( s );
       fJSON := fJSON.FindPath( 'query.search' );
       s := '';
-      if fJSON.Count = 0 then
-      begin
+      if fJSON.Count = 0 then begin
         s := 'No Title Match';
         exit( s ); // no page title matched search so show nothing
       end;
