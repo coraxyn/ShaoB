@@ -26,6 +26,8 @@ interface
   type
   
   
+    { tIRC }
+
     tIRC = class( TThread )
       private
          fBall8     : TStringList;
@@ -58,6 +60,7 @@ interface
          function  Synonyms( s : string ) : string;
          procedure URLEcho( s : string );
          function  Wiki( s : string ) : string;
+         function  WikiFreePascal( s : string ) : string;
       protected 
         procedure Execute; override;
       public
@@ -107,7 +110,7 @@ implementation
 
   type
     tIndex = ( id8Ball, idAnagram, idAurora, idDefine, idDoF, idHelp, idHost, idInfo, idLaunch, idNote, idOps, idPodcast,
-               idProfile, idQuit, idRAP, idShao, idSpacex, idSunspots, idSynonyms, idTime, idTopic, idUp, idVersion, idWeather, idWiki,
+               idProfile, idQuit, idRAP, idShao, idSpacex, idSunspots, idSynonyms, idTime, idTopic, idUp, idVersion, idWeather, idWiki, idWikiFreepascal,
                idCAction, idCTime, idCVersion,
                id001, id002, id003, id004, id005, id250, id251, id252, id253, id254, id255, 
                id265, id266, id328, id332, id333, id351, id353, id366, id372, id373, id375, 
@@ -474,6 +477,13 @@ implementation
                                          MsgChat( t );
                                          fPending := fUserName  + '> ' + t;
                                        end;
+                          idWikiFreepascal     : begin  // .FPWiki
+                                         if length( Para ) > 0
+                                           then t := 'FPWiki: ' + WikiFreePascal( para )
+                                           else t := 'FPWiki: Usage - .FPWiki <word | phrase>';
+                                         MsgChat( t );
+                                         fPending := fUserName  + '> ' + t;
+                                       end;
                           idCAction :  begin  // /Action
                                          t := copy( sRecv , pos( ' ', sRecv  ) + 1, length( sRecv  ) );
                                          fPending := fUserName + '> ' + t;
@@ -570,7 +580,7 @@ implementation
       CaseSensitive   := TRUE;
       Sorted          := TRUE;
       StrictDelimiter := TRUE;
-      CommaText       := '.8BALL,.ANAGRAM,.AURORA,.DEFINE,.DOF,.HELP,.HOST,.INFO,.LAUNCH,.NOTE,.OPS,.PODCAST,.PROFILE,.QUIT,.RAP,.SHAO,.SPACEX,.SUNSPOTS,.SYNONYMS,.TIME,.TOPIC,.UP,.VERSION,.WEATHER,.WIKI,' +
+      CommaText       := '.8BALL,.ANAGRAM,.AURORA,.DEFINE,.DOF,.HELP,.HOST,.INFO,.LAUNCH,.NOTE,.OPS,.PODCAST,.PROFILE,.QUIT,.RAP,.SHAO,.SPACEX,.SUNSPOTS,.SYNONYMS,.TIME,.TOPIC,.UP,.VERSION,.WEATHER,.WIKI,.FPWIKI' +
                          '/ACTION,/TIME,/VERSION,' +
                          '001,002,003,004,005,250,251,252,253,254,255,265,266,328,332,333,351,353,366,372,373,375,376,401,433,451,486,' +
                          'ERROR,JOIN,MODE,NOTICE,PART,PING,PRIVMSG,QUIT';
@@ -950,6 +960,33 @@ implementation
     end;
     result := s;
   end;  // tIRC.Wiki
+
+  function tIRC.WikiFreePascal(s: string): string;
+  // Returns Freepascal Wiki extract of s
+var
+  i : integer;
+begin
+  try
+    s := fCurl.Get( 'https://wiki.freepascal.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&titles=' + URLEncode( s ) );
+    fJSON := GetJSON( s );
+    fJSON := fJSON.FindPath( 'query.pages' );
+    fJSON := fJSON.Items[ 0 ];
+    s     := fJSON.FindPath( 'extract' ).AsString;
+    s     := ReplaceStr( s, '\n\n', '' );
+    s     := ReplaceStr( s, '\n', '' );
+    s     := ReplaceStr( s, '#13', '' );
+    if length( s ) > 350 then begin
+      s := copy( s, 1, 350 );
+      i := 350;
+      while ( i > 0 ) and ( s[ i ] <> '.' ) do dec( i );
+      s := copy( s, 1, i );
+    end;
+  except
+    on E : EJSONParser do s := 'Freepascal Wiki ' + E.Message + E.ClassName;
+    on E : Exception   do s := 'Not found';
+  end;
+  result := s;
+end;  // tIRC.WikiFreePascal
 
 
 end.  // sIRC 
