@@ -964,19 +964,33 @@ implementation
   function tIRC.WikiFp(aSearch: string): string;
   // Returns Freepascal Wiki search results of search
   var
-    s : string;
+    s, title, langSep : string;
+    vJSON : TJSONEnum;
     i : integer;
   begin
     try
       s := fCurl.Get( 'https://wiki.freepascal.org/api.php?action=query&list=search&format=json&srsearch=' + URLEncode( aSearch ) );
       fJSON := GetJSON( s );
       fJSON := fJSON.FindPath( 'query.search' );
-
-      fJSON := fJSON.Items[ 0 ];
-      s     := fJSON.FindPath( 'title' ).AsString;
-      s     := ReplaceStr( s, '\n\n', '' );
-      s     := ReplaceStr( s, '\n', '' );
-      s     := ReplaceStr( s, '#13', '' );
+      s := '';
+      if fJSON.Count = 0 then
+      begin
+        s := 'No Title Match';
+        exit( s ); // no page title matched search so show nothing
+      end;
+      for vJSON in fJSON do begin
+        title := vJSON.Value.FindPath( 'title' ).AsString;
+        if CompareText( aSearch, title ) = 0 then begin
+          s := title + ' ~ https://wiki.lazarus.freepascal.org/index.php?go=go&search=' + URLEncode( aSearch );
+          exit( s ); // equal to so set result to url with go param.
+        end;
+        langSep := title[ length( title ) - 2 ];
+        if CompareText( langSep, '/' ) <> 0 then begin // do not add language specific page titles
+          if length( s ) <> 0 then
+            s := s + ', ';
+          s := s + '' + title + '';
+        end;
+      end;
       if length( s ) > 350 then begin
         s := copy( s, 1, 350 );
         i := 350;
