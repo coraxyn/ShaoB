@@ -1,1 +1,0 @@
-{  sFPC.pas  Copyright (c) 2019 Paul Davidson. All rights reserved.  Libcurl -> Google search for Free Pascal 'docs-html' pages}unit sFPC;  {$MODE OBJFPC}  {$H+}interface  uses
